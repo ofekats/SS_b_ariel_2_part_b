@@ -23,7 +23,7 @@ namespace ariel{
         string getName () const; //return the player name
 
         Card pop_stack();
-        void push_stack(Card c);
+        void push_stack(Card c_to_push);
 
         int getRoundWon() const; //return the amount of rounds this player has won (num_of_win_round_)
         void setRoundWon(int num); //change the num_of_win_round_

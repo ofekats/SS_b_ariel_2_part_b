@@ -1,17 +1,18 @@
 #include "game.hpp"
-#include <fstream> //for file
+// #include <fstream> //for file
 #include <iostream>
 #include <stdexcept> //for exceptions
 
 using namespace std;
 
 //func can throw an exception
-ariel::Game::Game(Player& p1_ref, Player& p2_ref) //constructor
+ariel::Game::Game(Player& p1_ref, Player& p2_ref): //constructor
+p1_(p1_ref), p2_(p2_ref)
 {
     if(p1_ref.getIsPlaying() == false && p2_ref.getIsPlaying() == false)
     {
-        this->p1_ = p1_ref;
-        this->p2_ = p2_ref;
+        // this->p1_ = p1_ref;
+        // this->p2_ = p2_ref;
         this->num_of_drow_ =0;
         this->num_of_rounds_=0;
         this->end = false;
@@ -190,12 +191,13 @@ void ariel::Game::printWiner() // prints the name of the winning player
 //func can throw an exception
 void ariel::Game::printLog() // prints all the turns played one line per turn
 {
+    //open the file in read mood
     ifstream file("stats.txt");
     if (!file.is_open()) 
     {
         throw invalid_argument("Failed to open stats file"); // throw an exception
     }
-
+    //print each line 
     string line;
     while (getline(file, line)) {
         cout << line << endl;

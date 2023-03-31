@@ -3,6 +3,15 @@
 
 using namespace std;
 
+ariel::Player::Player() //defult constructor
+{
+    this->name_ = "";
+    this->num_of_win_cards_ = 0;
+    this->size_of_stack_ = 0;
+    this->num_of_win_round_ = 0;
+    this->isPlaying = false;
+}
+
 ariel::Player::Player(string name) //constructor
 {
     this->name_ = name;
@@ -76,6 +85,24 @@ void ariel::Player::addTocardesTaken(int toadd) //increase by toadd the num_of_w
 
 string ariel::Player::getName() const{
     return this->name_;
+}
+
+//func can throw an exception
+ariel::Card ariel::Player::pop_stack()
+{
+    if (!player_stack_.empty())
+    {
+        Card c = this->player_stack_.top();
+        this->player_stack_.pop();
+        return c;
+    }
+    throw runtime_error("Player stack is empty"); // throw an exception
+}
+
+
+void ariel::Player::push_stack(Card c_to_push)
+{
+    this->player_stack_.push(c_to_push);
 }
 
 int ariel::Player::getRoundWon() const //return the amount of rounds this player has won (num_of_win_round_)

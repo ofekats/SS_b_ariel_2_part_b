@@ -1,10 +1,11 @@
 #pragma once
 #include "player.hpp"
+#include <fstream> //for file
 
 namespace ariel{
     class Game{
     public:
-        Game(); //defult constructor
+        // Game(); //defult constructor
         Game(Player& p1_ref, Player& p2_ref); //constructor
         ~Game();
         void playTurn(); 
