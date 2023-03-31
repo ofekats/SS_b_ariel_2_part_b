@@ -210,7 +210,7 @@ void ariel::Game::printStats() // for each player prints basic statistics: win r
     
 }
 
-void ariel::Game::endOfGame() //remove tje players from the game
+void ariel::Game::endOfGame() //remove the players from the game
 {
     this->end = true;
     //
