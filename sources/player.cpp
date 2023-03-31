@@ -78,6 +78,38 @@ string ariel::Player::getName() const{
     return this->name_;
 }
 
+int ariel::Player::getRoundWon() const //return the amount of rounds this player has won (num_of_win_round_)
+{
+    return this->num_of_win_round_;
+}
+
+//func can throw an exception
+void ariel::Player::setRoundWon(int num) //change the num_of_win_round_
+{
+    if(num >= 0)
+    {
+        this->num_of_win_round_ = num;
+    }
+    else
+    {
+        throw invalid_argument("Rounds won must be positive or 0"); // throw an exception
+    }
+}
+
+//func can throw an exception
+void ariel::Player::addToRoundWon(int toadd) //increase by toadd the num_of_win_round_
+{
+    int number = this->num_of_win_round_ + toadd;
+    if(number >= 0)
+    {
+        this->num_of_win_round_ += toadd;
+    }
+    else
+    {
+        throw invalid_argument("Rounds won must be positive or 0"); // throw an exception
+    }
+}
+
 bool ariel::Player::getIsPlaying() const{ //is this player in a game or not
     return this->isPlaying;
 }
