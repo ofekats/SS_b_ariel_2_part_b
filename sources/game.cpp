@@ -22,6 +22,9 @@ ariel::Game::Game(Player& p1_ref, Player& p2_ref) //constructor
         //change players to playing a game
         this->p1_.setIsPlaying(true);
         this->p2_.setIsPlaying(true);
+        p1_.setstacksize(26);
+        p2_.setstacksize(26);
+        //cardssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
     }
     else
     {
@@ -40,36 +43,46 @@ void ariel::Game::playTurn()
 {
     if(p1_.stacksize() > 0 && p2_.stacksize() > 0)
     {
-        int nCard_this_round = 0;
+        int nCard_this_round = 0; //cards in the game this round
         bool half = false; //if each player need to get half the cards
-        num_of_rounds_++;
+        this->num_of_rounds_++; 
         Card c1 = p1_.pop_stack();
         Card c2 = p2_.pop_stack();
+        p1_.subStacksize(1);
+        p2_.subStacksize(1);
         nCard_this_round += 2;
         //stat 
         statsFile << p1_.getName() << " played " << c1.getCnum() << " of " << c1.getCshape() << " ";
         statsFile << p2_.getName() << " played " << c2.getCnum() << " of " << c2.getCshape() << ".";
         while(c1.getCnum() == c2.getCnum())
         {
-            num_of_drow_++;
+            this->num_of_drow_++;
             //stat 
             statsFile << " Drow.";
             if(p1_.stacksize() == 0 && p2_.stacksize() == 0)
             {
                 half=true; //cards are gone in drow -> each player need to get half the cards
+                //stat 
+                statsFile << " cards are gone- no winner to this round." << endl;
                 break;
             }
             //opposite cards
             p1_.pop_stack();
             p2_.pop_stack();
+            p1_.subStacksize(1);
+            p2_.subStacksize(1);
             if(p1_.stacksize() == 0 && p2_.stacksize() == 0)
             {
                 half=true; //cards are gone in drow -> each player need to get half the cards
+                //stat 
+                statsFile << " cards are gone- no winner to this round." << endl;
                 break;
             }
             //play again after drow
             c1 = p1_.pop_stack();
             c2 = p2_.pop_stack();
+            p1_.subStacksize(1);
+            p2_.subStacksize(1);
             nCard_this_round += 4;
             //stat
             statsFile << p1_.getName() << " played " << c1.getCnum() << " of " << c1.getCshape() << " ";
@@ -81,16 +94,41 @@ void ariel::Game::playTurn()
             p2_.addTocardesTaken(nCard_this_round/2);
             endOfGame(); //finish the game 
         }
-        if(c1.getCnum() > c2.getCnum()) //player1 won this round
+        else //not end of game
         {
-            p1_.addTocardesTaken(nCard_this_round);
-            p1_.addToRoundWon(1);
+            int x1 = c1.getCnum();
+            int x2 = c2.getCnum();
+            //Ace
+            if(x1 == 1)
+            {
+                if(x2 != 2)
+                {
+                    x1 =14;
+                }
+            }
+            if(x2 == 1)
+            {
+                if(x1 != 2)
+                {
+                    x2 =14;
+                }
+            }
 
-        }
-        else //player2 won this round
-        {
-            p2_.addTocardesTaken(nCard_this_round);
-            p2_.addToRoundWon(1);
+            if(x1 > x2) //player1 won this round
+            {
+                p1_.addTocardesTaken(nCard_this_round);
+                p1_.addToRoundWon(1);
+                //stat 
+                statsFile << p1_.getName() << " wins." << endl;
+            }
+            else //player2 won this round
+            {
+                p2_.addTocardesTaken(nCard_this_round);
+                p2_.addToRoundWon(1);
+                //stat 
+                statsFile << p2_.getName() << " wins." << endl;
+            }
+
         }
     }
     else
