@@ -16,7 +16,8 @@ ariel::Game::Game(Player& p1_ref, Player& p2_ref) //constructor
         this->num_of_rounds_=0;
         this->end = false;
         this->statsFile.open("stats.txt", ios::app); // create file if it doesn't exist, otherwise append to end of file
-        if (!this->statsFile.is_open()) {
+        if (!this->statsFile.is_open()) 
+        {
             throw invalid_argument("Failed to open stats file"); // throw an exception
         }
         //change players to playing a game
@@ -53,7 +54,7 @@ void ariel::Game::playTurn()
         nCard_this_round += 2;
         //stat 
         statsFile << p1_.getName() << " played " << c1.getCnum() << " of " << c1.getCshape() << " ";
-        statsFile << p2_.getName() << " played " << c2.getCnum() << " of " << c2.getCshape() << ".";
+        statsFile << p2_.getName() << " played " << c2.getCnum() << " of " << c2.getCshape() << ". ";
         while(c1.getCnum() == c2.getCnum())
         {
             this->num_of_drow_++;
@@ -63,7 +64,7 @@ void ariel::Game::playTurn()
             {
                 half=true; //cards are gone in drow -> each player need to get half the cards
                 //stat 
-                statsFile << " cards are gone- no winner to this round." << endl;
+                statsFile << "cards are gone- no winner to this round." << endl;
                 break;
             }
             //opposite cards
@@ -71,11 +72,12 @@ void ariel::Game::playTurn()
             p2_.pop_stack();
             p1_.subStacksize(1);
             p2_.subStacksize(1);
+            nCard_this_round += 2;
             if(p1_.stacksize() == 0 && p2_.stacksize() == 0)
             {
                 half=true; //cards are gone in drow -> each player need to get half the cards
                 //stat 
-                statsFile << " cards are gone- no winner to this round." << endl;
+                statsFile << "cards are gone- no winner to this round." << endl;
                 break;
             }
             //play again after drow
@@ -83,10 +85,10 @@ void ariel::Game::playTurn()
             c2 = p2_.pop_stack();
             p1_.subStacksize(1);
             p2_.subStacksize(1);
-            nCard_this_round += 4;
+            nCard_this_round += 2;
             //stat
             statsFile << p1_.getName() << " played " << c1.getCnum() << " of " << c1.getCshape() << " ";
-            statsFile << p2_.getName() << " played " << c2.getCnum() << " of " << c2.getCshape() << ".";
+            statsFile << p2_.getName() << " played " << c2.getCnum() << " of " << c2.getCshape() << ". ";
         }
         if(half) //cards are gone in drow -> each player need to get half the cards
         {
@@ -128,6 +130,10 @@ void ariel::Game::playTurn()
                 //stat 
                 statsFile << p2_.getName() << " wins." << endl;
             }
+            if(p1_.stacksize() == 0 && p2_.stacksize() == 0) //cards are gone after this round
+            {
+                endOfGame(); //finish the game 
+            }
 
         }
     }
@@ -137,29 +143,71 @@ void ariel::Game::playTurn()
     }
 }
 
+//func can throw an exception
 void ariel::Game::printLastTurn() // print the last turn stats
 {
+    ifstream file("stats.txt");
+    if (!file.is_open()) 
+    {
+        throw invalid_argument("Failed to open stats file"); // throw an exception
+    }
 
+    string lastLine, line;
+    while (getline(file, line)) {
+        lastLine = line;
+    }
+    cout << lastLine << endl;
+    //to throw exception if there is no turn that was????????????????????????????????????????????????????????????????????????????????
+    file.close();
 }
 
 void ariel::Game::playAll() //playes the game untill the end
 {
-
+    while(p1_.stacksize() > 0 && p2_.stacksize() > 0)
+    {
+        playTurn();
+    }
 }
 
 void ariel::Game::printWiner() // prints the name of the winning player
 {
-
+    //to throw exception if there is no winner yet?????????????????????????????????????????????????????????????????????????????????
+    if(p1_.cardesTaken() > p2_.cardesTaken())
+    {
+        cout << p1_.getName() << " is the winner!" << endl;
+    }
+    else if (p1_.cardesTaken() < p2_.cardesTaken())
+    {
+        cout << p2_.getName() << " is the winner!" << endl;
+    }
+    else
+    {
+        cout << "tie! no winner" << endl; // or to throw exception?????????????????????????????????????????????????????????????????
+    }
+    
 }
 
+//func can throw an exception
 void ariel::Game::printLog() // prints all the turns played one line per turn
 {
+    ifstream file("stats.txt");
+    if (!file.is_open()) 
+    {
+        throw invalid_argument("Failed to open stats file"); // throw an exception
+    }
 
+    string line;
+    while (getline(file, line)) {
+        cout << line << endl;
+    }
+    
+    //to throw exception if there is no turn that was????????????????????????????????????????????????????????????????????????????????
+    file.close();
 }
 
 void ariel::Game::printStats() // for each player prints basic statistics: win rate, cards won, <other stats you want to print>. Also print the draw rate and amount of draws that happand. (draw within a draw counts as 2 draws. )
 {
-
+    
 }
 
 void ariel::Game::endOfGame() //remove tje players from the game
